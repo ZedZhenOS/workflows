@@ -53,6 +53,7 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           path: ./dist/
+          merge-multiple: true
 
       - name: Add file to release
         uses: cssnr/upload-release-action@v1
