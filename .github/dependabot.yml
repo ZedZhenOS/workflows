@@ -1,8 +1,8 @@
 version: 2
 updates:
   - package-ecosystem: "github-actions"
-    directory: "/.github/workflows/"
+    directory: "/"
     schedule:
       interval: "cron"
-      cronjob: "37 22 * * *"
+      cronjob: "43 22 * * *"
       timezone: "Europe/Moscow"
