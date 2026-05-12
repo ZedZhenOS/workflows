@@ -4,5 +4,5 @@ updates:
     directory: "/.github/"
     schedule:
       interval: "cron"
-      cronjob: "29 22 * * *"
+      cronjob: "35 22 * * *"
       timezone: "Europe/Moscow"
