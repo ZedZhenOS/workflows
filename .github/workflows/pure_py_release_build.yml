@@ -1,0 +1,54 @@
+name: build
+
+on:
+  workflow_call:
+    inputs:
+      tag_name:
+        required: true
+        type: string
+      py_version:
+        required: true
+        type: string
+        default: "3.14"
+
+permissions:
+  contents: write
+
+jobs:
+  build_and_upload:
+    name: Build and upload
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ inputs.py_version }}
+
+      - run: pip install build -U
+      - run: python -m build
+
+      - name: Add file to release
+        uses: cssnr/upload-release-action@v1
+        with:
+          globs: |
+            ./dist/*.whl
+            ./dist/*.tar.gz
+
+      - id: repo-basename
+        run: echo "value=`basename ${{ github.repository }}`" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Upload files to server
+        uses: wangyucode/sftp-upload-action@v3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          privateKey: ${{ secrets.SSH_KEY }}
+          localDir: ./dist/
+          remoteDir: ${{ secrets.UPLOAD_DIR }}/${{ steps.repo-basename.outputs.value }}/${{ inputs.tag_name }}_${{ github.run_id }}_${{ github.run_attempt }}
+          forceUpload: true
