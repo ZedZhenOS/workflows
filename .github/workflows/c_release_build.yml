@@ -6,6 +6,10 @@ on:
       tag_name:
         required: true
         type: string
+      py_version:
+        required: true
+        type: string
+        default: "3.14"
 
 permissions:
   contents: write
@@ -44,7 +48,7 @@ jobs:
 
       - uses: actions/setup-python@v6
         with:
-          python-version: '3.14'
+          python-version: ${{ inputs.py_version }}
 
       - run: pip install build -U
       - run: python -m build -s
